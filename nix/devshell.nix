@@ -11,7 +11,7 @@ pkgs.mkShell {
       K3D_CFG="$(k3d kubeconfig write my-dev-cluster 2>/dev/null || true)"
       if [ -n "$K3D_CFG" ]; then
         export KUBECONFIG="$K3D_CFG"
-        echo "Kubernetes-Kontext auf 'k3d-my-dev-cluster' gesetzt."
+        echo "K8s-Context set to 'k3d-my-dev-cluster'"
       fi
     fi
   '';
