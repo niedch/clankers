@@ -1,0 +1,12 @@
+# direnv
+.direnv
+
+# Nix build outputs
+result
+result-*
+
+# Build artifacts
+bin/
+
+# pre-commit
+.pre-commit-config.yaml

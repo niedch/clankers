@@ -1,0 +1,72 @@
+[tools]
+go = "1.27.3"
+
+[tasks.default]
+description = "Default target"
+depends = ["help"]
+
+[tasks.all]
+description = "Run tests then build"
+depends = ["test", "build"]
+
+[tasks.build]
+description = "Build the binary"
+run = "go build -o bin/mux-session -v ."
+
+[tasks.dev]
+description = "Build and run the binary"
+depends = ["build"]
+run = "./bin/mux-session"
+
+[tasks.test]
+description = "Run tests"
+run = "go test -v ./..."
+
+[tasks.e2e]
+description = "Run end-to-end tests"
+run = "go test -count 1 -v ./e2e/..."
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = """
+go clean
+rm -f bin/mux-session
+rm -f bin/mux-session_unix
+"""
+
+[tasks.deps]
+description = "Download and tidy dependencies"
+run = """
+go mod download
+go mod tidy
+"""
+
+[tasks.build-linux]
+description = "Cross compilation for linux"
+env = { CGO_ENABLED = "0", GOOS = "linux", GOARCH = "amd64" }
+run = "go build -o bin/mux-session_unix -v ."
+
+[tasks.install]
+description = "Install binary globally with go install"
+run = "go install ."
+
+[tasks.fmt]
+description = "Format the codebase using go fmt"
+run = "go fmt ./..."
+
+[tasks.k3s-cluster]
+description = "Create or start the local k3s cluster via k3d"
+run = """
+if ! k3d cluster list | grep -q "my-dev-cluster"; then
+  echo "Erstelle lokalen K3s-Cluster..."
+  k3d cluster create my-dev-cluster --api-port 6550 -p "8081:80@loadbalancer"
+else
+  echo "K3s-Cluster läuft bereits oder existiert."
+  k3d cluster start my-dev-cluster
+fi
+"""
+
+[tasks.help]
+description = "Display available commands"
+run = "mise tasks"
+
