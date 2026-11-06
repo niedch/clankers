@@ -7,11 +7,12 @@ pkgs.mkShell {
   packages = packages;
 
   shellHook = ''
-    if command -v k3d >/dev/null 2>&1; then
-      K3D_CFG="$(k3d kubeconfig write my-dev-cluster 2>/dev/null || true)"
-      if [ -n "$K3D_CFG" ]; then
-        export KUBECONFIG="$K3D_CFG"
-        echo "K8s-Context set to 'k3d-my-dev-cluster'"
+    if command -v kind >/dev/null 2>&1; then
+      if kind get clusters 2>/dev/null | grep -qx "my-dev-cluster"; then
+        if kind export kubeconfig --name my-dev-cluster >/dev/null 2>&1; then
+          command -v kubectl >/dev/null 2>&1 && kubectl config use-context kind-my-dev-cluster >/dev/null 2>&1 || true
+          echo "K8s-Context set to 'kind-my-dev-cluster'"
+        fi
       fi
     fi
   '';

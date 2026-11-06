@@ -54,15 +54,25 @@ run = "go install ."
 description = "Format the codebase using go fmt"
 run = "go fmt ./..."
 
-[tasks.k3s-cluster]
-description = "Create or start the local k3s cluster via k3d"
+[tasks.kind-cluster]
+description = "Create the local Kubernetes cluster via kind"
 run = """
-if ! k3d cluster list | grep -q "my-dev-cluster"; then
-  echo "Erstelle lokalen K3s-Cluster..."
-  k3d cluster create my-dev-cluster --api-port 6550 -p "8081:80@loadbalancer"
+if ! kind get clusters 2>/dev/null | grep -qx "my-dev-cluster"; then
+  echo "Erstelle lokalen Kind-Cluster..."
+  kind create cluster --config kind-config.yaml
 else
-  echo "K3s-Cluster läuft bereits oder existiert."
-  k3d cluster start my-dev-cluster
+  echo "Kind-Cluster läuft bereits oder existiert."
+fi
+"""
+
+[tasks.kind-cluster-delete]
+description = "Delete the local Kubernetes cluster via kind"
+run = """
+if kind get clusters 2>/dev/null | grep -qx "my-dev-cluster"; then
+  echo "Lösche lokalen Kind-Cluster..."
+  kind delete cluster --name my-dev-cluster
+else
+  echo "Kind-Cluster existiert nicht."
 fi
 """
 

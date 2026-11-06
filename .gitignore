@@ -10,3 +10,13 @@ bin/
 
 # pre-commit
 .pre-commit-config.yaml
+
+# Kubernetes & Kind ephemeral configs
+kubeconfig
+kubeconfig.yaml
+kubeconfig.yml
+*.kubeconfig
+
+# Tilt runtime artifacts
+.tiltbuild/
+
