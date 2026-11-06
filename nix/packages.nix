@@ -8,5 +8,6 @@ with pkgs; [
   kind
   kubectl
   kubernetes-helm
-  tilt
+
+  k9s
 ]
